@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
@@ -17,15 +18,28 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 final APPCOMPAT_VERSION = '23.1.1'
+final RX_JAVA_VERSION = '1.1.0'
+final RX_LIFECYCLE_VERSION = '0.4.0'
+final RX_BINDING_VERSION = '0.3.0'
 
 dependencies {
     compile "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
     compile "com.android.support:support-v4:${APPCOMPAT_VERSION}"
     compile "com.android.support:recyclerview-v7:${APPCOMPAT_VERSION}"
     compile "com.android.support:design:${APPCOMPAT_VERSION}"
+
+    compile "io.reactivex:rxjava:${RX_JAVA_VERSION}"
+    compile "io.reactivex:rxandroid:${RX_JAVA_VERSION}"
+    compile "com.trello:rxlifecycle:${RX_LIFECYCLE_VERSION}"
+    compile "com.trello:rxlifecycle-components:${RX_LIFECYCLE_VERSION}"
+    compile "com.jakewharton.rxbinding:rxbinding:${RX_BINDING_VERSION}"
 
     compile 'org.greenrobot:eventbus:3.0.0'
 

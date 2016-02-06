@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
+
 import org.greenrobot.eventbus.EventBus;
 
 import me.egorand.introtorxjava.data.Topic;
@@ -23,12 +25,8 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Topic topic = Topic.values()[position];
         holder.topicTitle.setText(topic.titleRes);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EventBus.getDefault().post(new TopicSelectedEvent(topic));
-            }
-        });
+        RxView.clicks(holder.itemView)
+                .subscribe(v -> EventBus.getDefault().post(new TopicSelectedEvent(topic)));
     }
 
     @Override
