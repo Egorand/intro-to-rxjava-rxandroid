@@ -60,6 +60,8 @@ public class CreatingObservablesFragment extends TopicDetailFragment {
 
     private void fireFromObservable() {
         Observable<Integer> observable = Observable.from(Arrays.asList(1, 2, 3));
+        Observable.from(Arrays.asList(1, 2, 3));
+        Observable.from(new Integer[]{1, 2, 3});
         subscribeConsole(observable, consoleFrom);
     }
 
