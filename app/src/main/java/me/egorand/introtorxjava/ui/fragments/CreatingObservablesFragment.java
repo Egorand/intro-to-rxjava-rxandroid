@@ -11,12 +11,16 @@ import java.util.Arrays;
 
 import me.egorand.introtorxjava.R;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.subscriptions.CompositeSubscription;
 
 public class CreatingObservablesFragment extends TopicDetailFragment {
 
     private TextView consoleOnCreate;
     private TextView consoleJust;
     private TextView consoleFrom;
+
+    private CompositeSubscription subscription = new CompositeSubscription();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,11 +70,18 @@ public class CreatingObservablesFragment extends TopicDetailFragment {
     }
 
     private void subscribeConsole(Observable<Integer> observable, TextView console) {
-        observable
+        subscription.add(observable
                 .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         value -> console.append(value + "\n"),
                         error -> console.setText("Error: " + error.getLocalizedMessage()),
-                        () -> console.append("Done!"));
+                        () -> console.append("Done!")));
+    }
+
+    @Override
+    public void onDestroy() {
+        subscription.unsubscribe();
+        super.onDestroy();
     }
 }

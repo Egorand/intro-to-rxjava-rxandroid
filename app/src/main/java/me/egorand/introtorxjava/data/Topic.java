@@ -6,7 +6,8 @@ import me.egorand.introtorxjava.R;
 
 public enum Topic {
 
-    CREATING_OBSERVABLES(R.string.topic_creating_observables);
+    CREATING_OBSERVABLES(R.string.topic_creating_observables),
+    DEBUGGING(R.string.topic_debugging);
 
     public final @StringRes int titleRes;
 

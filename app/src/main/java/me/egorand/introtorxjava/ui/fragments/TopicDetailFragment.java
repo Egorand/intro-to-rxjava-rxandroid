@@ -28,6 +28,8 @@ public abstract class TopicDetailFragment extends RxFragment {
         switch (topic) {
             case CREATING_OBSERVABLES:
                 return new CreatingObservablesFragment();
+            case DEBUGGING:
+                return new DebuggingFragment();
             default:
                 throw new IllegalArgumentException("Unknown topic: " + topic);
         }

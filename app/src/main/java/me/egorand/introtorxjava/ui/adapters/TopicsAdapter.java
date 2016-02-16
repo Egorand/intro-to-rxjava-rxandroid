@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.CheckedTextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -18,7 +18,7 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        return new ViewHolder(layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false));
+        return new ViewHolder(layoutInflater.inflate(android.R.layout.simple_list_item_checked, parent, false));
     }
 
     @Override
@@ -26,7 +26,10 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
         final Topic topic = Topic.values()[position];
         holder.topicTitle.setText(topic.titleRes);
         RxView.clicks(holder.itemView)
-                .subscribe(v -> EventBus.getDefault().post(new TopicSelectedEvent(topic)));
+                .subscribe(v -> {
+                    holder.topicTitle.setChecked(true);
+                    EventBus.getDefault().post(new TopicSelectedEvent(topic));
+                });
     }
 
     @Override
@@ -36,11 +39,11 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView topicTitle;
+        CheckedTextView topicTitle;
 
         public ViewHolder(View view) {
             super(view);
-            topicTitle = (TextView) view.findViewById(android.R.id.text1);
+            topicTitle = (CheckedTextView) view.findViewById(android.R.id.text1);
         }
     }
 }
