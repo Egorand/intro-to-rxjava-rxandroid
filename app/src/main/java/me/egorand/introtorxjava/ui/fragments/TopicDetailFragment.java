@@ -30,6 +30,8 @@ public abstract class TopicDetailFragment extends RxFragment {
                 return new CreatingObservablesFragment();
             case DEBUGGING:
                 return new DebuggingFragment();
+            case RETROFIT:
+                return new RetrofitFragment();
             default:
                 throw new IllegalArgumentException("Unknown topic: " + topic);
         }

@@ -28,6 +28,7 @@ final APPCOMPAT_VERSION = '23.1.1'
 final RX_JAVA_VERSION = '1.1.0'
 final RX_LIFECYCLE_VERSION = '0.4.0'
 final RX_BINDING_VERSION = '0.3.0'
+final RETROFIT_VERSION = '2.0.0-beta4'
 
 dependencies {
     compile "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
@@ -42,6 +43,10 @@ dependencies {
     compile "com.jakewharton.rxbinding:rxbinding:${RX_BINDING_VERSION}"
 
     compile 'org.greenrobot:eventbus:3.0.0'
+
+    compile "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
+    compile "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
+    compile "com.squareup.retrofit2:adapter-rxjava:${RETROFIT_VERSION}"
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:3.3.0'
