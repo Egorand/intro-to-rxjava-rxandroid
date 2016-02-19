@@ -1,4 +1,4 @@
-package me.egorand.introtorxjava.data;
+package me.egorand.introtorxjava.data.entities;
 
 import android.support.annotation.StringRes;
 

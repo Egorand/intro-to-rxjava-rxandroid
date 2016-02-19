@@ -8,13 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import me.egorand.introtorxjava.R;
-import me.egorand.introtorxjava.rest.GithubApiClient;
 import me.egorand.introtorxjava.ui.adapters.ReposAdapter;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -30,7 +27,17 @@ public class RetrofitFragment extends TopicDetailFragment {
 
     private ReposAdapter reposAdapter;
 
+    private ReposLoaderFragment loaderFragment;
+
     private Subscription subscription;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        this.loaderFragment =
+                (ReposLoaderFragment) getFragmentManager().findFragmentByTag(ReposLoaderFragment.TAG);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,32 +63,18 @@ public class RetrofitFragment extends TopicDetailFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        GithubApiClient githubApiClient = initGithubApiClient();
-        loadRepos(githubApiClient);
+        loadRepos();
     }
 
-    private GithubApiClient initGithubApiClient() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(GithubApiClient.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
-        return retrofit.create(GithubApiClient.class);
-    }
-
-    private void loadRepos(GithubApiClient githubApiClient) {
-        subscription = githubApiClient.getUserRepos("EgorAnd")
+    private void loadRepos() {
+        subscription = loaderFragment.loadRepos()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(data -> Toast.makeText(getActivity(), data.source.name(), Toast.LENGTH_SHORT).show())
+                .doOnTerminate(() -> progress.setVisibility(View.GONE))
                 .subscribe(
-                        repos -> {
-                            progress.setVisibility(View.GONE);
-                            reposAdapter.setRepos(repos);
-                        },
-                        error -> {
-                            progress.setVisibility(View.GONE);
-                            Log.e(LOGTAG, error.getLocalizedMessage(), error);
-                        });
+                        data -> reposAdapter.setRepos(data.data),
+                        error -> Log.e(LOGTAG, error.getLocalizedMessage(), error));
     }
 
     @Override

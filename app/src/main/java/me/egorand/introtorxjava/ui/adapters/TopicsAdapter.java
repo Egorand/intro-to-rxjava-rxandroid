@@ -10,7 +10,7 @@ import com.jakewharton.rxbinding.view.RxView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import me.egorand.introtorxjava.data.Topic;
+import me.egorand.introtorxjava.data.entities.Topic;
 import me.egorand.introtorxjava.events.TopicSelectedEvent;
 
 public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder> {

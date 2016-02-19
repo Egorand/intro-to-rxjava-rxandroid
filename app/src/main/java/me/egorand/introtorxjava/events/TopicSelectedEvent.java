@@ -1,6 +1,6 @@
 package me.egorand.introtorxjava.events;
 
-import me.egorand.introtorxjava.data.Topic;
+import me.egorand.introtorxjava.data.entities.Topic;
 
 public class TopicSelectedEvent {
 

@@ -2,7 +2,7 @@ package me.egorand.introtorxjava.ui.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
 import me.egorand.introtorxjava.R;
-import me.egorand.introtorxjava.data.Topic;
+import me.egorand.introtorxjava.data.entities.Topic;
 
 public abstract class TopicDetailFragment extends RxFragment {
 
@@ -43,7 +43,7 @@ public abstract class TopicDetailFragment extends RxFragment {
 
         Topic topic = Topic.valueOf(getArguments().getString(ARG_TOPIC_NAME));
         Activity activity = this.getActivity();
-        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+        Toolbar appBarLayout = (Toolbar) activity.findViewById(R.id.detail_toolbar);
         if (appBarLayout != null) {
             appBarLayout.setTitle(getString(topic.titleRes));
         }

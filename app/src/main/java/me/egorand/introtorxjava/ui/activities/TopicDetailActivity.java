@@ -9,7 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import me.egorand.introtorxjava.R;
-import me.egorand.introtorxjava.data.Topic;
+import me.egorand.introtorxjava.data.entities.Topic;
+import me.egorand.introtorxjava.ui.fragments.ReposLoaderFragment;
 import me.egorand.introtorxjava.ui.fragments.TopicDetailFragment;
 
 public class TopicDetailActivity extends AppCompatActivity {
@@ -28,12 +29,22 @@ public class TopicDetailActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
+            attachLoaderFragment();
+
             Topic topic = Topic.valueOf(getIntent().getStringExtra(TopicDetailFragment.ARG_TOPIC_NAME));
             TopicDetailFragment fragment = TopicDetailFragment.newInstance(topic);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.topic_detail_container, fragment)
                     .commit();
         }
+    }
+
+    private void attachLoaderFragment() {
+        ReposLoaderFragment loaderFragment = new ReposLoaderFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(loaderFragment, ReposLoaderFragment.TAG)
+                .commit();
     }
 
     @Override

@@ -1,8 +1,8 @@
-package me.egorand.introtorxjava.rest;
+package me.egorand.introtorxjava.data.rest;
 
 import java.util.List;
 
-import me.egorand.introtorxjava.data.Repo;
+import me.egorand.introtorxjava.data.entities.Repo;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import rx.Observable;

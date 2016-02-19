@@ -1,5 +1,6 @@
 package me.egorand.introtorxjava.ui.adapters;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.egorand.introtorxjava.data.Repo;
+import me.egorand.introtorxjava.data.entities.Repo;
 
 /**
  * @author Egor
@@ -33,8 +34,8 @@ public class ReposAdapter extends RecyclerView.Adapter<ReposAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Repo repo = repos.get(position);
-        holder.nameView.setText(repo.name);
-        holder.descriptionView.setText(repo.description);
+        holder.nameView.setText(repo.getName());
+        holder.descriptionView.setText(repo.getDescription());
     }
 
     @Override
@@ -58,6 +59,7 @@ public class ReposAdapter extends RecyclerView.Adapter<ReposAdapter.ViewHolder> 
         public ViewHolder(View itemView) {
             super(itemView);
             nameView = (TextView) itemView.findViewById(android.R.id.text1);
+            nameView.setTypeface(Typeface.DEFAULT_BOLD);
             descriptionView = (TextView) itemView.findViewById(android.R.id.text2);
         }
     }
