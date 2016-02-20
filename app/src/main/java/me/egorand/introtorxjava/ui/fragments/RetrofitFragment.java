@@ -85,6 +85,7 @@ public class RetrofitFragment extends TopicDetailFragment {
 
     private void initSwipeRefreshLayout(View rootView) {
         swipeRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh);
+        swipeRefresh.setColorSchemeResources(R.color.colorAccent);
         swipeRefresh.setOnRefreshListener(() -> reloadRepos());
     }
 
