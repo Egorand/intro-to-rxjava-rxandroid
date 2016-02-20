@@ -2,6 +2,7 @@ package me.egorand.introtorxjava.ui.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,11 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.List;
+
 import me.egorand.introtorxjava.R;
+import me.egorand.introtorxjava.data.entities.Data;
+import me.egorand.introtorxjava.data.entities.Repo;
 import me.egorand.introtorxjava.ui.adapters.ReposAdapter;
+import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @author Egor
@@ -23,7 +27,7 @@ public class RetrofitFragment extends TopicDetailFragment {
 
     private static final String LOGTAG = RetrofitFragment.class.getSimpleName();
 
-    private View progress;
+    private SwipeRefreshLayout swipeRefresh;
 
     private ReposAdapter reposAdapter;
 
@@ -49,7 +53,7 @@ public class RetrofitFragment extends TopicDetailFragment {
         super.onViewCreated(view, savedInstanceState);
 
         initReposView(view);
-        progress = view.findViewById(android.R.id.progress);
+        initSwipeRefreshLayout(view);
     }
 
     private void initReposView(View rootView) {
@@ -57,6 +61,11 @@ public class RetrofitFragment extends TopicDetailFragment {
         reposView.setLayoutManager(new LinearLayoutManager(getActivity()));
         reposAdapter = new ReposAdapter(LayoutInflater.from(getActivity()));
         reposView.setAdapter(reposAdapter);
+    }
+
+    private void initSwipeRefreshLayout(View rootView) {
+        swipeRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh);
+        swipeRefresh.setOnRefreshListener(() -> reloadRepos());
     }
 
     @Override
@@ -67,21 +76,38 @@ public class RetrofitFragment extends TopicDetailFragment {
     }
 
     private void loadRepos() {
-        subscription = loaderFragment.loadRepos()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        unsubscribeFromPrevious();
+        subscribeToObservable(loaderFragment.loadRepos());
+    }
+
+    private void unsubscribeFromPrevious() {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+    }
+
+    private void subscribeToObservable(Observable<Data<List<Repo>>> observable) {
+        subscription = observable
+                .doOnSubscribe(() -> setRefreshing(true))
                 .doOnNext(data -> Toast.makeText(getActivity(), data.source.name(), Toast.LENGTH_SHORT).show())
-                .doOnTerminate(() -> progress.setVisibility(View.GONE))
+                .doOnTerminate(() -> setRefreshing(false))
                 .subscribe(
                         data -> reposAdapter.setRepos(data.data),
                         error -> Log.e(LOGTAG, error.getLocalizedMessage(), error));
     }
 
+    private void setRefreshing(boolean refreshing) {
+        swipeRefresh.post(() -> swipeRefresh.setRefreshing(refreshing));
+    }
+
+    private void reloadRepos() {
+        unsubscribeFromPrevious();
+        subscribeToObservable(loaderFragment.reloadRepos());
+    }
+
     @Override
     public void onDestroy() {
-        if (subscription != null) {
-            subscription.unsubscribe();
-        }
+        unsubscribeFromPrevious();
         super.onDestroy();
     }
 }

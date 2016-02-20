@@ -1,6 +1,7 @@
 package me.egorand.introtorxjava.data.loaders;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import me.egorand.introtorxjava.data.datastore.Datastore;
 import me.egorand.introtorxjava.data.entities.Data;
@@ -49,6 +50,7 @@ public class ReposLoader {
 
     private Observable<Data<List<Repo>>> network() {
         return githubApiClient.getUserRepos("EgorAnd")
+                .delay(5, TimeUnit.SECONDS)
                 .doOnNext(items -> {
                     memoryDatastore.clear();
                     memoryDatastore.add(items);
