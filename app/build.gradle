@@ -30,6 +30,7 @@ final RX_JAVA_VERSION = '1.1.0'
 final RX_LIFECYCLE_VERSION = '0.4.0'
 final RX_BINDING_VERSION = '0.3.0'
 final RETROFIT_VERSION = '2.0.0-beta4'
+final OKHTTP_VERSION = '3.1.2'
 final DBFLOW_VERSION = '3.0.0-beta3'
 
 dependencies {
@@ -50,10 +51,17 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
     compile "com.squareup.retrofit2:adapter-rxjava:${RETROFIT_VERSION}"
 
+    compile "com.squareup.okhttp3:okhttp:${OKHTTP_VERSION}"
+    compile "com.squareup.okhttp3:logging-interceptor:${OKHTTP_VERSION}"
+
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:${DBFLOW_VERSION}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${DBFLOW_VERSION}"
     compile "com.github.Raizlabs.DBFlow:dbflow:${DBFLOW_VERSION}"
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:3.3.0'
+}
+
+configurations.all {
+    resolutionStrategy.force "com.android.support:support-annotations:${APPCOMPAT_VERSION}"
 }

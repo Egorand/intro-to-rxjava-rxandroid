@@ -59,4 +59,9 @@ public class ReposLoader {
                 })
                 .map(items -> Data.network(items));
     }
+
+    public void clearCache() {
+        memoryDatastore.clear();
+        diskDatastore.clear();
+    }
 }

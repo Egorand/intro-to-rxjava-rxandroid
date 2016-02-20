@@ -4,4 +4,5 @@
     <string name="topic_creating_observables">Creating Observables</string>
     <string name="topic_debugging">Debugging</string>
     <string name="topic_retrofit">Retrofit</string>
+    <string name="clear_cache">Clear cache</string>
 </resources>

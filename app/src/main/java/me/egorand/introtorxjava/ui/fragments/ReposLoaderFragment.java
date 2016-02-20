@@ -12,6 +12,8 @@ import me.egorand.introtorxjava.data.entities.Data;
 import me.egorand.introtorxjava.data.entities.Repo;
 import me.egorand.introtorxjava.data.loaders.ReposLoader;
 import me.egorand.introtorxjava.data.rest.GithubApiClient;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -45,12 +47,15 @@ public class ReposLoaderFragment extends Fragment {
                 new ReposMemoryDatastore(),
                 new ReposDiskDatastore(),
                 createGithubApiClient());
-        this.reposSubject = AsyncSubject.create();
     }
 
     private GithubApiClient createGithubApiClient() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(GithubApiClient.BASE_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
@@ -58,32 +63,37 @@ public class ReposLoaderFragment extends Fragment {
     }
 
     public Observable<Data<List<Repo>>> loadRepos() {
-        unsubscribeFromPrevious();
-        subscription = reposLoader.loadRepos()
+        if (subscription == null || subscription.isUnsubscribed()) {
+            initSubject(reposLoader.loadRepos());
+        }
+        return reposSubject.asObservable();
+    }
+
+    private void initSubject(Observable<Data<List<Repo>>> source) {
+        reposSubject = AsyncSubject.create();
+        subscription = source
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(reposSubject);
-        return reposSubject;
-    }
-
-    private void unsubscribeFromPrevious() {
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
     }
 
     public Observable<Data<List<Repo>>> reloadRepos() {
-        unsubscribeFromPrevious();
-        subscription = reposLoader.reloadRepos()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(reposSubject);
-        return reposSubject;
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+        initSubject(reposLoader.reloadRepos());
+        return reposSubject.asObservable();
     }
 
     @Override
     public void onDestroy() {
-        unsubscribeFromPrevious();
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
         super.onDestroy();
+    }
+
+    public void clearCache() {
+        reposLoader.clearCache();
     }
 }
