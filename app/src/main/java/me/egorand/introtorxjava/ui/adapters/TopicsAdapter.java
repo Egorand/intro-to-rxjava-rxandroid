@@ -1,10 +1,26 @@
+/*
+ * Copyright 2016 Egor Andreevici
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.egorand.introtorxjava.ui.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
+import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -18,7 +34,7 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        return new ViewHolder(layoutInflater.inflate(android.R.layout.simple_list_item_checked, parent, false));
+        return new ViewHolder(layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false));
     }
 
     @Override
@@ -26,10 +42,7 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
         final Topic topic = Topic.values()[position];
         holder.topicTitle.setText(topic.titleRes);
         RxView.clicks(holder.itemView)
-                .subscribe(v -> {
-                    holder.topicTitle.setChecked(true);
-                    EventBus.getDefault().post(new TopicSelectedEvent(topic));
-                });
+                .subscribe(v -> EventBus.getDefault().post(new TopicSelectedEvent(topic)));
     }
 
     @Override
@@ -39,11 +52,11 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        CheckedTextView topicTitle;
+        TextView topicTitle;
 
         public ViewHolder(View view) {
             super(view);
-            topicTitle = (CheckedTextView) view.findViewById(android.R.id.text1);
+            topicTitle = (TextView) view.findViewById(android.R.id.text1);
         }
     }
 }
